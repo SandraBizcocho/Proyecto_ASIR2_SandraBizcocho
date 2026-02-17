@@ -24,13 +24,13 @@
 
 # **1. Recopilación de información técnica**
 
-Para el taller **Triana Motor** he seleccionado un stack tecnológico basado íntegramente en Software Libre (FOSS) para garantizar la soberanía tecnológica y reducir costes de licencias.
+Para el taller **Triana Motor** he seleccionado un stack tecnológico basado íntegramente en **Software Libre (FOSS) y 100% Linux** para maximizar la soberanía tecnológica y reducir costes de licencias.
 
-- **Sistema Operativo Host:** Debian 12 (Bookworm) por su estabilidad y soporte a largo plazo.
-- **Orquestación:** Docker Engine con Docker Compose para la fase inicial y escalabilidad futura a Kubernetes.
-- **Seguridad de Red:** IPTables/NFTables en el servidor Debian para gestionar el tráfico entre las 3 interfaces (WAN, LAN, DMZ).
-- **Infraestructura Cloud:** AWS (Capa gratuita) con instancias EC2 para la redundancia y base de datos externa.
-- **Túnel Seguro:** WireGuard para la interconexión cifrada entre la sede física y AWS.
+- **Sistema Operativo Host:** Debian 12 (Bookworm) por su estabilidad crítica para orquestación de contenedores y soporte a largo plazo.
+- **Orquestación:** Docker Engine con Docker Compose para el despliegue de microservicios aislados en la fase inicial y escalabilidad futura a Kubernetes.
+- **Conectividad Segura: Wireguard** para establecer un túnel VPN cifrado entre la sede física de Triana y la nube.
+- **Infraestructura Cloud:** AWS (Capa gratuita) para la redundancia de datos y servicios externos mediante instancias EC2.
+- **Servicios de Red:** Agentes de monitorización y un servicio de DHCP failover para la gestión dinámica de IPs en la LAN del taller.
 
 [⬆️ Volver al índice de apartados](#índice-de-apartados)
 
@@ -38,9 +38,57 @@ Para el taller **Triana Motor** he seleccionado un stack tecnológico basado ín
 
 # **2. Diseño lógico y físico de la infraestructura**
 
-El diseño se basa en la segmentación de red para proteger los datos de los clientes del taller.
+La arquitectura se diseña bajo el principio de **segmentación de red** para proteger los datos de los clientes del taller.
 
-**Diseño Físico (Topología de red)El servidor central cuenta con 3 tarjetas de red (NICs) físicas o virtualizadas para aislar los entornos de trabajo:NIC 1 (WAN): Conexión a Internet (DHCP dinámico para asegurar portabilidad entre casa/clase).NIC 2 (LAN): Red interna para el PC de Administración y el terminal de operarios.NIC 3 (DMZ): Red aislada para los contenedores de servicios web y base de datos.Diseño Lógico (Plan de IP Estáticas)ElementoInterfazDirección IPServidor Debian (Gateway)eth1 (LAN)192.168.10.1Servidor Debian (Gateway)eth2 (DMZ)172.16.0.1PC Administración (Grafana)LAN192.168.10.10Contenedor Web App CitasDMZ172.16.0.10Contenedor PostgreSQLDMZ172.16.0.20
+**Diseño Físico (Topología de red)** 
+El servidor central actuará como Gateway/Firewall con 3 tarjetas de red (NICs) físicas/virtualizadas para aislar los entornos de trabajo:
+**1. NIC 1 (WAN):** Interfaz en modo **DHCP** (adaptador puente). Permite la portabilidad entre casa/clase).
+**2. NIC 2 (LAN):** Red interna para el PC de Administración y el terminal de operarios.
+**3. NIC 3 (DMZ):** Red aislada para los contenedores de servicios web y base de datos.
+
+
+**Diseño Lógico (Plan de IP Estáticas)**
+
+Elemento                       Interfaz      Dirección IP
+__________________________________________________________
+Servidor Debian (Gateway)      eth1(LAN)     192.168.10.1
+Servidor Debian (Gateway)      eth2(DMZ)     172.16.0.1
+PC Administración (Grafana)       LAN        192.168.10.10
+Contenedor Web App Citas          DMZ        172.16.0.10
+Contenedor PostgreSQL             DMZ        172.16.0.20
+
+[⬆️ Volver al índice de apartados](#índice-de-apartados)
+
+---
+
+# **3. Definición de objetivos y fases del proyecto**
+
+El objetivo principal es digitalizar la gestión de citas de Triana Motor mediante una infraestructura híbrida segura.
+
+* **Fase 1: Despliegue Local (On-premise):** Instalación de Debian 12, configuración de las 3 redes y el stack de Docker Compose.
+* **Fase 2: Monitorización y Control:** Implementación de Grafana en el PC de Admin para supervisar el rendimiento (CPU, RAM, Disco).
+* **Fase 3: Hibridación Cloud:** Configuración del túnel VPN y despliegue de la base de datos de respaldo en AWS.
+* **Fase 4: Pruebas y Seguridad:** Auditoría de firewall y simulación de fallos de red.
+
+[⬆️ Volver al índice de apartados](#índice-de-apartados)
+
+---
+
+# **4. Recursos y presupuesto**
+
+Siguiendo la filosofía "Hibridofoss", el presupuesto se reduce a la inversión en hardware, ya que el software no tiene costes de licencia directa.
+
+* **Hardware:** Servidor físico (o VM con recursos asignados: 4GB RAM, 2 vCPUs, 40GB SSD).
+* **Software (Gratuito):** Debian Linux, Docker, PostgreSQL, Grafana, WireGuard.
+* **Servicios Cloud:** AWS Free Tier (Coste $0 durante los primeros 12 meses).
+
+[⬆️ Volver al índice de apartados](#índice-de-apartados)
+
+---
+
+# **5. Documentación técnica**
+
+Toda la evolución del proyecto, archivos de configuración (YAML, scripts de red) y manuales de usuario se centralizarán en este repositorio de GitHub. Se utilizará el estándar de la rúbrica para asegurar la claridad y rigor técnico en cada commit.
 
 
 ## Enlaces a recursos de la unidad
